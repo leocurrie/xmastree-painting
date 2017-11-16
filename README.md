@@ -1,5 +1,5 @@
 # xmastree-painting
-The idea behind the tree lights is that a user can 'paint' colour onto a christmas tree in the same way that you can paint on a computer screen.
+The idea behind the project is that a user can 'paint' colour onto a christmas tree like using 'paint' on a PC.
 The project is made from several different software and hardware components.
 
 ## Hardware
@@ -14,7 +14,7 @@ An Arduino, or even an ESP8266 module could be used to implement the server.
 
 ## Software
 
-There are 4 main components
+There are 4 components
 
 1. An HTTP server wrto control a string of WS2811/WS2812 LEDs
    The HTTP server handles JSON messages posted from the UI. These messages simply contain an array of pixel colours, there is one array element for each LED in the string. The pixel colours are passed as RGB values.
