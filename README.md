@@ -2,7 +2,7 @@
 The idea behind the tree lights is that a user can 'paint' colour onto a christmas tree in the same way that you can paint on a computer screen.
 The project is made from several different software and hardware components.
 
-##Hardware
+## Hardware
 
 Hardware wise, the project was implemented with several strings of WS2812 LEDs. These are commonly sold in strings of 50.
 The strings were daisy-chained together, with appropriate power supply arrangements. The data input to the string was fed directly from a Raspberry Pi.
@@ -12,7 +12,7 @@ The video camera used was a Raspberry Pi camera.
 The project could certainly be implemented with different hardware - for example, most modern USB webcams are able to deliver MJPG streams and thus could be used in place of the Raspberry Pi webcam.
 An Arduino, or even an ESP8266 module could be used to implement the server.
 
-##Software
+## Software
 
 There are 4 main components
 
