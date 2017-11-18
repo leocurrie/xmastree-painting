@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Christmas Tree Painting</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="/static/jscolor.js"></script>
+<script src="/static/pixels.js"></script>
+<!--[if lte IE 8]><script type="text/javascript" src="excanvas.js"></script><![endif]-->
+
+<style type="text/css">
+
+#canvas {
+	background-image: url(http://pi.ip.address:8090/?action=stream);
+	background-repeat: no-repeat;
+	width: 640px;
+	height: 480px;
+	border: 1px black;
+	margin-left: auto;
+	margin-right: auto;
+	cursor: pointer;
+}
+
+
+#controls {
+	width: 100%;
+	height: 40px;
+}
+</style>
+</head>
+<body>
+<div id="controls"><label for="colourpicker">Choose a colour:</label><input id="colourpicker" class="jscolor" value="FF0000"></div>
+<div id="canvas">
+</div>
+
+<script type="text/javascript">
+// painting variables
+var canvasWidth = 640;
+var canvasHeight = 480;
+var brushRadius = 5; 
+var paint = false;
+
+
+// connection variables
+var CONNECTION_TIMEOUT = 1000;
+var pixelServerUrl = "/pixels";
+var sendBuffer = new Array();
+var updateInterval;
+var postInProgress = false;
+
+
+var canvas = document.getElementById('canvas');
+function addClick(x1,y1) {
+	var color = $("#colourpicker").val();
+	var red = parseInt(color.substring(0,2), 16);
+	var green = parseInt(color.substring(2,4), 16);
+	var blue = parseInt(color.substring(4,6), 16);
+	
+	// translate x/y of click into pixel index
+	for (var i=0; i<pixels.length; i++) {
+		// check if pixel is inside brush radius
+		var x0 = pixels[i][0];
+		var y0 = pixels[i][1];
+		if (Math.sqrt((x1-x0)*(x1-x0) + (y1-y0)*(y1-y0)) < brushRadius) {
+			// pixel was brushed
+			// send data to server
+			sendBuffer.push({"p":i, "r":red, "g":green, "b":blue});
+		}
+	}
+}
+
+
+function handleStart(e) {
+	if (e.originalEvent.touches) {
+		e = e.originalEvent.touches[0];
+	}	
+	paint = true;
+	addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+}
+
+function handleMove(e) {
+
+  if(paint){
+	if (e.originalEvent.touches) {
+		e = e.originalEvent.touches[0];
+	}
+	addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+  }
+}
+
+function handleEnd(e) {
+	paint = false;
+}
+
+
+$('#canvas').mousedown(handleStart);
+$('#canvas').mousemove(handleMove);
+$('#canvas').mouseup(handleEnd);
+$('#canvas').mouseleave(handleEnd);
+$('#canvas').on({"touchstart" : handleStart});
+$('#canvas').on({"touchend" : handleEnd});
+$('#canvas').on({"touchmove" : handleMove});
+$('#canvas').on({"touchcancel" : handleEnd});
+
+
+
+
+
+
+// send the pixel data to the server
+function postPixels() {
+	if (sendBuffer.length > 0) {
+		var data = {"paint" : new Array()};
+		for (var i=0; i<sendBuffer.length; i++) {
+			data["paint"].push(sendBuffer[i]);
+		}
+		// remove all the entries we're about to send
+		sendBuffer.splice(0, i);
+		
+		var postData = JSON.stringify(data);
+		
+		postInProgress = true;
+		$.ajax({
+			cache: false,
+			context: data,
+			type: "POST", 
+			url: pixelServerUrl,
+			data: postData,
+			dataType: "json",
+			timeout: CONNECTION_TIMEOUT,
+			error: function (data, status, jqXHR) {
+				// restore the 'sendBuffer' timings
+				for (var i=0; i<this.timings.length; i++) {
+					sendBuffer.push( data["paint"][i]);
+				}
+				postInProgress = false;
+			},
+			complete: function() {
+				postInProgress = false;
+			}
+		});
+	}
+}
+
+
+updateInterval = window.setInterval(postPixels, 100);
+</script>
+</body>
+</html>
+
+
