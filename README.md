@@ -16,19 +16,19 @@ An Arduino, or even an ESP8266 module could be used to implement the server.
 
 There are 4 components
 
-1. An HTTP server wrto control a string of WS2811/WS2812 LEDs
+1. An HTTP server wrto control a string of WS2811/WS2812 LEDs.
    The HTTP server handles JSON messages posted from the UI. These messages simply contain an array of pixel colours, there is one array element for each LED in the string. The pixel colours are passed as RGB values.
    When a message is received, the server immediately updates the string of LEDs using a WS281X library.
    The library can be found here: https://github.com/jgarff/rpi_ws281x
    The HTTP server (server.py) was based on one of the examples included in this package.
 
-2. A live video stream encoder
+2. A live video stream encoder.
    A fork of mjpg-streamer with support for the raspicam was used.
    https://github.com/jacksonliam/mjpg-streamer
    This provides low-latency (but high-bandwidth) video that can be displayed in most browsers without any complicated plugins.
    This works very well on local connections (i.e. LANs)
 
-3. A tool to generate a mapping between an on-screen pixel and an LED
+3. A tool to generate a mapping between an on-screen pixel and an LED.
    This is the 'magic' part.
    When the string of LEDs is draped over a tree, the position of each LED is essentially random - i.e. the co-ordinates of each LED in 3D-space cannot easily be controlled.
    However, from the view point of a camera pointed at the LEDs, the position of each LED can be mapped to a 2D coordinate as follows:
@@ -39,7 +39,7 @@ There are 4 components
    The process is repeated for each LED in the string, and in this way a map between the LED index (i.e. the number of the LED in the string) and the apparent pixel co-ordinates (as viewed from the camera location) is built up.
    As long as the LEDs and camera remain in fixed positions, the co-ordinates will be correct.
 
-4. A webpage displating the live video, with Javascript to control the HTTP API
+4. A webpage displating the live video, with Javascript to control the HTTP Server.
    The video stream is displayed behind a transparent DIV.
    A colour-chooser widget is presented to allow the 'brush' colour to be set (RBG value),
    When a click (or touch) is detected on the DIV, the co-ordinates are taken from the event. 
