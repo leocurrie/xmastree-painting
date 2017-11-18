@@ -9,17 +9,15 @@ https://www.amazon.co.uk/WS2811-Pixels-digital-Addressable-String/dp/B00MXW054Y
 
 When starting off, a single string of LEDs can be powered from a small-ish 5V power supply.
 However, once you have several strings connected together, the power requirements become substatial.
-At full, white brightness, each LED is likely to draw about 60mA. Thus, a string of 50 LEDs, with all LEDs at full brightness will draw 3A
-Eight strings daisy-chained together could draw 24A!
+At full brightness (white), each LED is likely to draw about 60mA. Thus, a string of 50 LEDs can draw up to 3A, and eight strings daisy-chained together could draw 24!
 
-The wire used in the strings commonly available is not rated for this kind of current. 
-If voltage is only applied to one end of a long string, the voltage drop in the wire will cause inconsistencies in colour, and will prevent the LEDs further down the chain from lighting at all.
-Therefore, it will be necessary to feed power to the chain at each end. For example, with 3 chains connected together, power should be applied at both ends of the long chain, plus each junction.
-
+The wire used in the strings is not thick enough for this kind of current.
+If voltage is applied to only one end of a long string, the voltage drop along the wire will cause inconsistencies in colour, and will prevent the LEDs further down the chain from lighting at all.
+To power long strings, either several independant power supplies must be used, or substantial cables must be used to distribute the 5V all the way along
 
 
 
-
+## Software
 
 1. Get the ws281x library running and working with your hardware
 
