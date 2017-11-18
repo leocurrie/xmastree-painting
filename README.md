@@ -16,7 +16,7 @@ An Arduino, or even an ESP8266 module could be used to implement the server.
 
 There are 4 components
 
-1. An HTTP server (the "Pixel Server") to control a string of WS2811/WS2812 LEDs.
+1. The "Pixel Server" (scripts/server.py), an HTTP server to control a string of WS2811/WS2812 LEDs.
    The Pixel Server handles JSON messages posted from the UI. These messages simply contain an array of pixel colours, there is one array element for each LED of interest. The pixel colours are passed as RGB values.
    When a message is received, the server immediately updates the string of LEDs using a WS281X library.
    The library can be found here: https://github.com/jgarff/rpi_ws281x
@@ -28,7 +28,7 @@ There are 4 components
    This provides low-latency (but high-bandwidth) video that can be displayed in most browsers without any complicated plugins.
    This works very well on local connections (i.e. LANs)
 
-3. A tool to generate a mapping between an on-screen pixel and an LED.
+3. A tool (scripts/calibrate.py) to generate a mapping (scripts/static/pixels.js) between an on-screen pixel and an LED.
    This is the 'magic' part.
    When the string of LEDs is draped over a tree, the position of each LED is essentially random - i.e. the co-ordinates of each LED in 3D-space cannot easily be controlled.
    However, from the view point of a camera pointed at the LEDs, the position of each LED can be mapped to a 2D coordinate as follows:
@@ -43,7 +43,7 @@ There are 4 components
    The video stream is displayed behind a transparent DIV.
    A colour-chooser widget is presented to allow the 'brush' colour to be set (RBG value),
    When a click (or touch) is detected on the DIV, the co-ordinates are taken from the event. 
-   Using the map created in (3), any pixel nearby - i.e. within a 'brush radius' of the event co-ordinates - is marked with the selected RGB value.
+   Using the map (scripts/static/pixels.js), any pixel nearby - i.e. within a 'brush radius' of the event co-ordinates - is marked with the selected RGB value.
    An array of all pixels is then sent to the server in (1).
 
   
@@ -85,6 +85,7 @@ To power long strings, either several independant power supplies must be used, o
    http://127.0.0.1:8090/?action=snapshot
 
 4. Now the fun part. Turn the lights out.
+   This is where we run calibrate.py to generate the mapping file - pixels.js - which is used by the client
    With the pixel server running, launch the 'calibrate.py' script, and pipe the output to a file "pixels.js"
    If everything is setup correctly, you should see each LED in the chain being turned on, then off in sequence.
    Once all LEDs have been measured, the output from the script should be an array of co-ordinates.
